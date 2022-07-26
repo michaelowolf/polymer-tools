@@ -125,7 +125,7 @@ export abstract class DocumentProcessor {
           console.warn(
               new Warning({
                 code: 'import-ignored',
-                message: `Import could not be loaded and will be ignored.`,
+                message: `Import could not be loaded while preparing JS modules and will be ignored.`,
                 parsedDocument: this.document.parsedDocument,
                 severity: Severity.WARNING,
                 sourceRange: scriptImport.sourceRange!,
@@ -148,7 +148,7 @@ export abstract class DocumentProcessor {
           recast.parse(scriptDocument.parsedDocument.contents, {
             parser: {
               parse(source: any) {
-                return require("espree").parse(source, { ecmaVersion: 2022 });
+                return require("espree").parse(source, { ecmaVersion: 2022, loc: true, range: true });
               }
             }
           }).program;
@@ -278,7 +278,7 @@ export abstract class DocumentProcessor {
         console.warn(
             new Warning({
               code: 'not-found',
-              message: `Can't find recast node for element ${element.tagName}`,
+              message: `Can't find recast node for element ${element.tagName} while inlining templates`,
               parsedDocument: this.document.parsedDocument,
               severity: Severity.WARNING,
               sourceRange: element.sourceRange!
@@ -336,7 +336,7 @@ export abstract class DocumentProcessor {
         console.warn(
             new Warning({
               code: 'not-found',
-              message: `Can't find recast node for element ${element.tagName}`,
+              message: `Can't find recast node for element ${element.tagName} while adding import meta`,
               parsedDocument: this.document.parsedDocument,
               severity: Severity.WARNING,
               sourceRange: element.sourceRange!
