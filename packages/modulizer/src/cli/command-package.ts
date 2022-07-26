@@ -12,7 +12,6 @@
  * http://polymer.github.io/PATENTS.txt
  */
 import * as fse from 'fs-extra';
-import * as inquirer from 'inquirer';
 import * as path from 'path';
 import * as semver from 'semver';
 
@@ -92,22 +91,11 @@ export default async function run(options: CliOptions) {
   // Prompt user for new package name & version if none exists
   // TODO(fks) 07-19-2017: Add option to suppress prompts
   if (typeof npmPackageName !== 'string') {
-    npmPackageName = (await inquirer.prompt([{
-                       type: 'input',
-                       name: 'npm-name',
-                       message: 'npm package name?',
-                       default: inBowerJson && `@polymer/${inBowerJson.name}`,
-                     }]))['npm-name'] as string;
+    npmPackageName = (inBowerJson && `@polymer/${inBowerJson.name}`) ?? '';
   }
 
   if (typeof npmPackageVersion !== 'string') {
-    npmPackageVersion =
-        (await inquirer.prompt([{
-          type: 'input',
-          name: 'npm-version',
-          message: 'npm package version?',
-          default: inBowerJson && semver.inc(inBowerJson.version, 'major'),
-        }]))['npm-version'] as string;
+    npmPackageVersion = (inBowerJson && semver.inc(inBowerJson.version, 'major')) ?? '';
   }
 
   logStep(1, 2, '🌀', `Converting Package...`);
