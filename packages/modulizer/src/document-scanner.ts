@@ -120,7 +120,7 @@ export class DocumentScanner extends DocumentProcessor {
           console.warn(
               new Warning({
                 code: 'import-ignored',
-                message: `Import could not be loaded and will be ignored.`,
+                message: `Import could not be loaded while scanning JS module and will be ignored.`,
                 parsedDocument: this.document.parsedDocument,
                 severity: Severity.WARNING,
                 sourceRange: scriptImport.sourceRange!,

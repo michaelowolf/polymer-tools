@@ -277,7 +277,7 @@ export class PackageScanner {
         console.warn(
             new Warning({
               code: 'import-ignored',
-              message: `Import could not be loaded and will be ignored.`,
+              message: `Import could not be loaded while scanning dependencies and will be ignored.`,
               parsedDocument: document.parsedDocument,
               severity: Severity.WARNING,
               sourceRange: htmlImport.sourceRange!,

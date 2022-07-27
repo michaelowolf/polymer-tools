@@ -222,7 +222,7 @@ export class DocumentConverter extends DocumentProcessor {
         console.warn(
             new Warning({
               code: 'import-ignored',
-              message: `Import could not be loaded and will be ignored.`,
+              message: `Import could not be loaded while getting HTML imports and will be ignored.`,
               parsedDocument: this.document.parsedDocument,
               severity: Severity.WARNING,
               sourceRange: import_.sourceRange!,
@@ -257,7 +257,7 @@ export class DocumentConverter extends DocumentProcessor {
         console.warn(
             new Warning({
               code: 'import-ignored',
-              message: `Import could not be loaded and will be ignored.`,
+              message: `Import could not be loaded while converting JS modules and will be ignored.`,
               parsedDocument: this.document.parsedDocument,
               severity: Severity.WARNING,
               sourceRange: scriptImport.sourceRange!,
@@ -338,7 +338,13 @@ export class DocumentConverter extends DocumentProcessor {
       }
       const offsets = htmlDocument.sourceRangeToOffsets(sourceRange);
 
-      const file = recast.parse(script.parsedDocument.contents);
+      const file = recast.parse(script.parsedDocument.contents, {
+        parser: {
+          parse(source: any) {
+            return require("espree").parse(source, { ecmaVersion: 2022 , loc:true, range: true});
+          }
+        }
+      });
       const program = this.rewriteInlineScript(file.program, namespacedExports);
 
       if (program === undefined) {
@@ -385,7 +391,13 @@ export class DocumentConverter extends DocumentProcessor {
       }
       const offsets = htmlDocument.sourceRangeToOffsets(sourceRange);
 
-      const file = recast.parse(dom5.getTextContent(astNode));
+      const file = recast.parse(dom5.getTextContent(astNode), {
+        parser: {
+          parse(source: any) {
+            return require("espree").parse(source, { ecmaVersion: 2022, loc:true, range: true });
+          }
+        }
+      });
       const program = this.rewriteInlineScript(file.program, namespacedExports);
 
       if (program === undefined) {
@@ -432,7 +444,7 @@ export class DocumentConverter extends DocumentProcessor {
         console.warn(
             new Warning({
               code: 'import-ignored',
-              message: `Import could not be loaded and will be ignored.`,
+              message: `Import could not be loaded while converting top-level HTML document and will be ignored.`,
               parsedDocument: this.document.parsedDocument,
               severity: Severity.WARNING,
               sourceRange: scriptImport.sourceRange!,
